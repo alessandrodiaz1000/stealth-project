@@ -2,29 +2,44 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>presto</title>
-<style>
-  :root { color-scheme: light dark; }
-  html, body {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #0b0b0c;
-    color: #f5f5f5;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-    text-align: center;
-  }
-  main { padding: 2rem; }
-  p { font-size: 1.1rem; opacity: 0.7; letter-spacing: 0.02em; }
-</style>
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a0a0b">
+<title>buon compleanno</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<main>
-  <p>presto qui.</p>
+
+<p class="progress" aria-hidden="true"><span id="step">01</span> / <span id="total">10</span></p>
+
+<main class="stage" id="stage">
+  <div class="visual visual--photos is-paused" id="wall" aria-hidden="true"></div>
+
+  <div class="visual visual--dest is-paused" id="destStage" hidden aria-hidden="true">
+    <div class="globe" id="globe">
+      <div class="globe__mask">
+        <div class="globe__track" id="globeTrack"></div>
+        <div class="globe__shade" aria-hidden="true"></div>
+      </div>
+      <div class="globe__atmo" aria-hidden="true"></div>
+      <div class="globe__ring"></div>
+    </div>
+  </div>
+
+  <div class="textzone textzone--center" id="textzone">
+    <div class="copy">
+      <p class="line" id="line" aria-live="polite"></p>
+      <p class="sub" id="sub" hidden></p>
+    </div>
+  </div>
+
+  <div class="finale" id="finale" hidden>
+    <h1>Buon Compleanno Amore</h1>
+    <p class="sign">solito obbiettivo: farti sorridere<br>spero di esserci riuscito</p>
+  </div>
 </main>
+
+<script src="js/app.js" defer></script>
 </body>
 </html>
