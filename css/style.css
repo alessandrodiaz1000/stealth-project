@@ -98,6 +98,29 @@ body {
   bottom: calc(40px + env(safe-area-inset-bottom));
 }
 
+.stage.has-photo-fade .textzone--bottom::before {
+  content: "";
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: min(58vh, 480px);
+  background: linear-gradient(
+    to top,
+    var(--bg) 0%,
+    rgba(10, 10, 11, 0.94) 22%,
+    rgba(10, 10, 11, 0.6) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.stage.has-photo-fade .textzone--bottom .copy {
+  position: relative;
+  z-index: 3;
+}
+
 .copy {
   width: 100%;
   max-width: 22em;
@@ -305,11 +328,22 @@ body {
 }
 
 .visual--dest.is-paused .globe__track,
-.visual--dest.is-paused .globe { animation-play-state: paused; }
+.visual--dest.is-paused .globe,
+.visual--dest.is-paused .globe__ticker-track,
+.visual--dest.is-paused .pin,
+.visual--dest.is-paused .pin::after { animation-play-state: paused; }
+
+.globe-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: min(82vw, 320px);
+}
 
 .globe {
   position: relative;
-  width: min(78vw, 300px);
+  width: 100%;
   aspect-ratio: 1;
   flex: 0 0 auto;
   transform-origin: center center;
@@ -319,13 +353,13 @@ body {
 
 .globe__mask {
   position: absolute;
-  inset: 6%;
+  inset: 5%;
   border-radius: 50%;
   overflow: hidden;
   background: #0a1628;
   box-shadow:
-    inset -10px -8px 24px rgba(0, 0, 0, 0.45),
-    inset 10px 6px 20px rgba(255, 255, 255, 0.08);
+    inset -8px -6px 20px rgba(0, 0, 0, 0.5),
+    inset 8px 5px 16px rgba(255, 255, 255, 0.06);
 }
 
 .globe__track {
@@ -360,27 +394,26 @@ body {
 
 .pin {
   position: absolute;
-  width: 10px;
-  height: 10px;
-  margin: -5px 0 0 -5px;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
   border-radius: 50%;
   background: var(--accent);
   box-shadow:
-    0 0 0 2px rgba(201, 162, 94, 0.35),
-    0 0 14px rgba(201, 162, 94, 0.95),
-    0 0 28px rgba(201, 162, 94, 0.45);
-  animation: pin-pulse 7s ease-in-out infinite;
-  animation-delay: var(--delay, 0s);
+    0 0 0 2px rgba(201, 162, 94, 0.4),
+    0 0 14px rgba(201, 162, 94, 0.9);
   opacity: 0;
   z-index: 2;
+  animation: pin-pulse 7s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
 }
 
 .pin::after {
   content: "";
   position: absolute;
-  inset: -7px;
+  inset: -6px;
   border-radius: 50%;
-  border: 1.5px solid rgba(201, 162, 94, 0.75);
+  border: 1.5px solid rgba(201, 162, 94, 0.7);
   opacity: 0;
   animation: pin-ring 7s ease-in-out infinite;
   animation-delay: var(--delay, 0s);
@@ -398,17 +431,53 @@ body {
   58% { opacity: 0; transform: scale(0.55); }
 }
 
-.visual--dest.is-paused .pin,
-.visual--dest.is-paused .pin::after { animation-play-state: paused; }
+.globe__ticker {
+  width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+}
+
+.globe__ticker-track {
+  display: flex;
+  gap: 22px;
+  width: max-content;
+  animation: ticker-scroll 7s linear infinite;
+  will-change: transform;
+}
+
+.globe__ticker-item {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  white-space: nowrap;
+  opacity: 0.88;
+}
+
+@keyframes globe-roll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes globe-zoom {
+  from { transform: scale(0.94); }
+  to { transform: scale(1.1); }
+}
+
+@keyframes ticker-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
 
 .globe__shade {
   position: absolute;
   inset: 0;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 28% 24%, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 34%),
-    radial-gradient(circle at 74% 72%, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0) 46%),
-    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 62%, rgba(0, 0, 0, 0.28) 100%);
+    radial-gradient(circle at 28% 24%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 32%),
+    radial-gradient(circle at 74% 72%, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0) 46%),
+    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 58%, rgba(0, 0, 0, 0.35) 100%);
   pointer-events: none;
 }
 
@@ -417,8 +486,8 @@ body {
   inset: 4%;
   border-radius: 50%;
   box-shadow:
-    0 0 24px rgba(120, 170, 220, 0.18),
-    0 0 56px rgba(80, 130, 190, 0.1);
+    0 0 20px rgba(120, 170, 220, 0.14),
+    0 0 48px rgba(80, 130, 190, 0.08);
   pointer-events: none;
 }
 
@@ -440,16 +509,6 @@ body {
   border-radius: 50%;
   border-top: 1px solid rgba(255, 255, 255, 0.07);
   transform: rotate(-22deg);
-}
-
-@keyframes globe-roll {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
-}
-
-@keyframes globe-zoom {
-  from { transform: scale(0.94); }
-  to { transform: scale(1.1); }
 }
 
 /* finale */
@@ -480,27 +539,31 @@ body {
   line-height: 1.04;
   letter-spacing: -0.035em;
   text-align: center;
-  max-width: 14ch;
+  max-width: 16ch;
 }
 
-.sign {
-  position: absolute;
-  left: calc(var(--pad) + env(safe-area-inset-left));
-  right: calc(var(--pad) + env(safe-area-inset-right));
-  bottom: calc(28px + env(safe-area-inset-bottom));
-  margin: 0;
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.05em;
-  color: var(--muted);
-  text-align: left;
-  line-height: 1.5;
-  text-transform: none;
-  max-width: 22em;
+.finale__sub {
+  margin: 18px 0 0;
+  font-size: clamp(1.15rem, 5vw, 1.45rem);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  text-align: center;
+  opacity: 0.88;
+}
+
+.stage.is-visual-full .visual--photos {
+  padding-top: calc(52px + env(safe-area-inset-top));
+  padding-bottom: calc(52px + env(safe-area-inset-bottom));
+}
+
+.stage.is-visual-full .visual--dest {
+  padding-top: calc(72px + env(safe-area-inset-top));
+  padding-bottom: calc(72px + env(safe-area-inset-bottom));
 }
 
 @media (prefers-reduced-motion: reduce) {
   .line, .sub, .visual, .finale { transition-duration: 0.01ms !important; }
-  .col__track, .globe__track, .globe, .pin, .pin::after { animation: none !important; }
+  .col__track, .globe__track, .globe, .globe__ticker-track, .pin, .pin::after { animation: none !important; }
   .visual--photos { overflow-y: auto; mask-image: none; -webkit-mask-image: none; }
 }

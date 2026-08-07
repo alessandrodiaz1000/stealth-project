@@ -5,55 +5,40 @@
   var PHOTO_COUNT = 35;
 
   var DESTINATIONS = [
-    { lon: -84, lat: 10 },
-    { lon: 80, lat: 7 },
-    { lon: 113, lat: -2 },
-    { lon: 122, lat: 12 },
-    { lon: -102, lat: 23 },
-    { lon: -85, lat: 12 },
-    { lon: -80, lat: 9 },
-    { lon: -90, lat: 15 },
-    { lon: -89, lat: 13 },
-    { lon: 25, lat: -29 }
+    { name: 'Costa Rica', lon: -84, lat: 10 },
+    { name: 'Sri Lanka', lon: 80, lat: 7 },
+    { name: 'Indonesia', lon: 113, lat: -2 },
+    { name: 'Filippine', lon: 122, lat: 12 },
+    { name: 'Messico', lon: -102, lat: 23 },
+    { name: 'Nicaragua', lon: -85, lat: 12 },
+    { name: 'Panama', lon: -80, lat: 9 },
+    { name: 'Guatemala', lon: -90, lat: 15 },
+    { name: 'El Salvador', lon: -89, lat: 13 },
+    { name: 'Sudafrica', lon: 25, lat: -29 }
   ];
 
   var STEPS = [
+    { t: 'Quest\'anno ho pensato di farti un regalo importante.' },
+    { t: 'Inizialmente avevo pensato a qualcosa per l\'università.' },
+    { t: 'Ma poi ho guardato indietro.' },
+    { visual: 'photos', hideText: true },
     {
-      t: 'Ciao Amore,',
-      sub: '(scusa per la disgrafia delle scritte nella lettera)'
-    },
-    {
-      t: 'Quest\'anno ho pensato\ndi farti un regalo\nimportante..'
-    },
-    {
-      t: 'Inizialmente avevo pensato\na qualcosa per l\'università...'
-    },
-    {
-      t: 'Ma poi ho guardato indietro...',
-      visual: 'photos',
-      slot: 'top'
-    },
-    {
-      t: 'e ho capito che non erano\ncerto le cose materiali a\nfarti sorridere davvero',
+      t: 'E ho capito che non era un regalo da scartare a farti sorridere davvero.',
       visual: 'photos',
       slot: 'bottom'
     },
+    { t: 'E siccome per me la cosa più importante è vederti sorridere,' },
+    { t: 'ho deciso di regalarti qualcosa che so che ti rende felice.' },
+    { t: 'Un viaggio.' },
+    { t: 'Stavolta però ho deciso di andare un po\' più lontano.' },
+    { visual: 'dest', hideText: true },
     {
-      t: 'Quindi ho deciso di regalarti\nquello che ti piace davvero'
-    },
-    { t: 'Un viaggio...' },
-    {
-      t: 'Stavolta ho deciso di andare un po\' più lontano però..',
-      visual: 'dest',
-      slot: 'top'
-    },
-    {
-      t: 'Queste sono solo idee a cui avevo pensato..',
+      t: 'Queste sono solo alcune idee a cui avevo pensato.',
       visual: 'dest',
       slot: 'bottom'
     },
     {
-      t: '...ho però pensato che hai davanti l\'inizio di una nuova esperienza, e voglio che abbia la priorità.\n\nPer questo il viaggio non ha ancora né una data né una destinazione: voglio sceglierle insieme a te, quando avrà senso farlo.\n\nQuando avrai capito tempi, esami e incastri dell\'università, costruiamo il viaggio e prenotiamo.',
+      t: 'Però hai davanti l\'inizio di una nuova esperienza, e voglio che questa abbia la priorità.\n\nPer questo il viaggio non ha ancora né una data né una destinazione: voglio sceglierle insieme a te, quando avrà senso farlo.\n\nQuando avrai capito tempi, esami e incastri dell\'università, costruiamo il viaggio e prenotiamo.',
       long: true
     },
     { final: true }
@@ -148,11 +133,10 @@
 
   function makePin(lon, lat, i) {
     var pin = document.createElement('span');
-    var delay = (i * 0.55) + 's';
     pin.className = 'pin';
     pin.style.left = ((lon + 180) / 360 * 100) + '%';
     pin.style.top = ((90 - lat) / 180 * 100) + '%';
-    pin.style.setProperty('--delay', delay);
+    pin.style.setProperty('--delay', (i * 0.55) + 's');
     return pin;
   }
 
@@ -187,7 +171,24 @@
     track.appendChild(makeGlobeSlice());
   }
 
+  function buildTicker() {
+    var track = document.querySelector('.globe__ticker-track');
+    if (!track) return;
+    track.innerHTML = '';
+    var addSet = function () {
+      DESTINATIONS.forEach(function (d) {
+        var item = document.createElement('span');
+        item.className = 'globe__ticker-item';
+        item.textContent = d.name;
+        track.appendChild(item);
+      });
+    };
+    addSet();
+    addSet();
+  }
+
   buildGlobe();
+  buildTicker();
 
   function destPlay() {
     destStage.hidden = false;
@@ -221,7 +222,8 @@
     if (done || fading) return;
     var step = STEPS[at];
     if (!step || step.final) return;
-    autoTimer = setTimeout(function () { go(1); }, readMs(step.t, step.long));
+    var ms = step.hideText ? 4500 : readMs(step.t, step.long);
+    autoTimer = setTimeout(function () { go(1); }, ms);
   }
 
   function setVisual(step) {
@@ -234,7 +236,9 @@
   function setLayout(step) {
     var slot = step.slot || 'center';
     textzone.className = 'textzone textzone--' + slot;
-    textzone.hidden = false;
+    textzone.hidden = !!step.hideText;
+    stage.classList.toggle('has-photo-fade', step.visual === 'photos' && slot === 'bottom');
+    stage.classList.toggle('is-visual-full', !!step.hideText);
   }
 
   function showFinale() {
@@ -243,6 +247,8 @@
     wallStop();
     destStop();
     textzone.hidden = true;
+    stage.classList.remove('has-photo-fade');
+    stage.classList.remove('is-visual-full');
     document.querySelector('.progress').hidden = true;
     stage.classList.add('is-final');
     finale.hidden = false;
@@ -261,8 +267,17 @@
     setLayout(step);
 
     line.className = 'line' + (step.long ? ' is-long' : '');
-    line.textContent = step.t;
     line.classList.remove('is-out');
+    sub.hidden = true;
+    sub.classList.remove('is-in', 'is-out');
+
+    if (step.hideText) {
+      line.textContent = '';
+      scheduleAuto();
+      return;
+    }
+
+    line.textContent = step.t;
 
     if (step.sub) {
       sub.hidden = false;
@@ -273,8 +288,6 @@
         sub.classList.add('is-in');
       });
     } else {
-      sub.hidden = true;
-      sub.classList.remove('is-in', 'is-out');
       requestAnimationFrame(function () { line.classList.add('is-in'); });
     }
 
@@ -310,11 +323,13 @@
 
     clearAuto();
     fading = true;
-    line.classList.remove('is-in');
-    line.classList.add('is-out');
-    if (!sub.hidden) {
-      sub.classList.remove('is-in');
-      sub.classList.add('is-out');
+    if (!textzone.hidden) {
+      line.classList.remove('is-in');
+      line.classList.add('is-out');
+      if (!sub.hidden) {
+        sub.classList.remove('is-in');
+        sub.classList.add('is-out');
+      }
     }
 
     setTimeout(function () {

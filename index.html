@@ -17,13 +17,18 @@
   <div class="visual visual--photos is-paused" id="wall" aria-hidden="true"></div>
 
   <div class="visual visual--dest is-paused" id="destStage" hidden aria-hidden="true">
-    <div class="globe" id="globe">
-      <div class="globe__mask">
-        <div class="globe__track" id="globeTrack"></div>
-        <div class="globe__shade" aria-hidden="true"></div>
+    <div class="globe-stack">
+      <div class="globe" id="globe">
+        <div class="globe__mask">
+          <div class="globe__track" id="globeTrack"></div>
+          <div class="globe__shade" aria-hidden="true"></div>
+        </div>
+        <div class="globe__atmo" aria-hidden="true"></div>
+        <div class="globe__ring"></div>
       </div>
-      <div class="globe__atmo" aria-hidden="true"></div>
-      <div class="globe__ring"></div>
+      <div class="globe__ticker" id="globeTicker" aria-hidden="true">
+        <div class="globe__ticker-track"></div>
+      </div>
     </div>
   </div>
 
@@ -35,8 +40,8 @@
   </div>
 
   <div class="finale" id="finale" hidden>
-    <h1>Buon Compleanno Amore</h1>
-    <p class="sign">solito obbiettivo: farti sorridere<br>spero di esserci riuscito</p>
+    <h1>Buon compleanno amore.</h1>
+    <p class="finale__sub">Ti amo.</p>
   </div>
 </main>
 
