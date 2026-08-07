@@ -35,10 +35,13 @@
       slot: 'bottom'
     },
     { t: 'E siccome per me la cosa più importante è vederti sorridere,' },
-    { t: 'ho deciso di regalarti qualcosa che so che ti rende felice.' },
+    { t: 'ho deciso di regalarti qualcosa che so che ti rende felice:' },
     { t: 'Un viaggio.' },
-    { t: 'Stavolta però ho deciso di andare un po\' più lontano.' },
-    { visual: 'dest', hideText: true },
+    {
+      t: 'Stavolta però ho deciso di andare un po\' più lontano.',
+      visual: 'dest',
+      slot: 'top'
+    },
     {
       t: 'Queste sono solo alcune idee a cui avevo pensato.',
       visual: 'dest',
@@ -245,7 +248,7 @@
     textzone.className = 'textzone textzone--' + slot;
     textzone.hidden = !!step.hideText;
     stage.classList.toggle('has-photo-fade', step.visual === 'photos' && slot === 'bottom');
-    stage.classList.toggle('has-photo-fade-top', step.visual === 'photos' && slot === 'top');
+    stage.classList.toggle('has-photo-fade-top', slot === 'top' && (step.visual === 'photos' || step.visual === 'dest'));
     stage.classList.toggle('is-visual-full', !!step.hideText);
   }
 
