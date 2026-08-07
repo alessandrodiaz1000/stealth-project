@@ -98,6 +98,29 @@ body {
   bottom: calc(40px + env(safe-area-inset-bottom));
 }
 
+.stage.has-photo-fade-top .textzone--top::before {
+  content: "";
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: min(58vh, 480px);
+  background: linear-gradient(
+    to bottom,
+    var(--bg) 0%,
+    rgba(10, 10, 11, 0.94) 22%,
+    rgba(10, 10, 11, 0.6) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.stage.has-photo-fade-top .textzone--top .copy {
+  position: relative;
+  z-index: 3;
+}
+
 .stage.has-photo-fade .textzone--bottom::before {
   content: "";
   position: fixed;

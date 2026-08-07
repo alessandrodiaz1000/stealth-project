@@ -24,8 +24,11 @@
     },
     { t: 'Quest\'anno ho pensato di farti un regalo importante.' },
     { t: 'Inizialmente avevo pensato a qualcosa per l\'università.' },
-    { t: 'Ma poi ho guardato indietro.' },
-    { visual: 'photos', hideText: true },
+    {
+      t: 'Ma poi ho guardato indietro.',
+      visual: 'photos',
+      slot: 'top'
+    },
     {
       t: 'E ho capito che non era un regalo da scartare a farti sorridere davvero.',
       visual: 'photos',
@@ -242,6 +245,7 @@
     textzone.className = 'textzone textzone--' + slot;
     textzone.hidden = !!step.hideText;
     stage.classList.toggle('has-photo-fade', step.visual === 'photos' && slot === 'bottom');
+    stage.classList.toggle('has-photo-fade-top', step.visual === 'photos' && slot === 'top');
     stage.classList.toggle('is-visual-full', !!step.hideText);
   }
 
@@ -252,6 +256,7 @@
     destStop();
     textzone.hidden = true;
     stage.classList.remove('has-photo-fade');
+    stage.classList.remove('has-photo-fade-top');
     stage.classList.remove('is-visual-full');
     document.querySelector('.progress').hidden = true;
     stage.classList.add('is-final');
