@@ -18,6 +18,10 @@
   ];
 
   var STEPS = [
+    {
+      t: 'Ciao Amore,',
+      sub: '(scusa per la disgrafia delle scritte nella lettera)'
+    },
     { t: 'Quest\'anno ho pensato di farti un regalo importante.' },
     { t: 'Inizialmente avevo pensato a qualcosa per l\'università.' },
     { t: 'Ma poi ho guardato indietro.' },
