@@ -566,12 +566,15 @@ body {
 }
 
 .finale__sub {
-  margin: 18px 0 0;
+  position: absolute;
+  right: calc(var(--pad) + env(safe-area-inset-right));
+  bottom: calc(40px + env(safe-area-inset-bottom));
+  margin: 0;
   font-size: clamp(1.15rem, 5vw, 1.45rem);
   font-weight: 400;
   letter-spacing: -0.01em;
   color: var(--text);
-  text-align: center;
+  text-align: right;
   opacity: 0.88;
 }
 
