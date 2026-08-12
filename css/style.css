@@ -294,7 +294,6 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  border: 1px dashed rgba(255, 255, 255, 0.28);
   border-radius: 12px;
   background: #0f0f11;
   overflow: hidden;
@@ -327,7 +326,6 @@ body {
   text-align: center;
 }
 
-.frame.is-missing { border-color: var(--alert); }
 .frame.is-missing .frame__img { visibility: hidden; }
 .frame.is-missing .frame__alert { display: block; }
 .frame.is-missing .frame__ph { color: var(--alert); }
