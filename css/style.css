@@ -364,6 +364,46 @@ body {
   width: min(82vw, 320px);
 }
 
+.globe-stack.is-intro-wait .globe,
+.globe-stack.is-intro-wait .globe__ticker {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.globe-stack.is-intro-grow .globe,
+.globe-stack.is-intro-spin .globe {
+  visibility: visible;
+}
+
+.globe-stack.is-intro-grow .globe__ticker,
+.globe-stack.is-intro-spin .globe__ticker,
+.globe-stack.is-intro-grow .globe__pins,
+.globe-stack.is-intro-spin .globe__pins {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.globe-stack.is-intro-grow .globe {
+  animation: globe-intro-grow 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.globe-stack.is-intro-grow .globe__track {
+  animation: none;
+}
+
+.globe-stack.is-intro-spin .globe {
+  animation: globe-intro-vortex 2.55s cubic-bezier(0.45, 0.05, 0.2, 1) forwards;
+}
+
+.globe-stack.is-intro-spin .globe__track {
+  animation: globe-roll-fast 0.28s linear infinite;
+}
+
+.globe-stack:not(.is-intro-wait):not(.is-intro-grow):not(.is-intro-spin) .globe__ticker {
+  opacity: 1;
+  visibility: visible;
+}
+
 .globe {
   position: relative;
   width: 100%;
@@ -413,6 +453,7 @@ body {
   inset: 0;
   z-index: 1;
   pointer-events: none;
+  transition: opacity 0.6s ease;
 }
 
 .pin {
@@ -457,6 +498,7 @@ body {
 .globe__ticker {
   width: 100%;
   overflow: hidden;
+  transition: opacity 0.7s ease 0.1s, visibility 0.7s ease 0.1s;
   -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
   mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
 }
@@ -481,6 +523,30 @@ body {
 @keyframes globe-roll {
   from { transform: translate3d(0, 0, 0); }
   to { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes globe-roll-fast {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes globe-intro-grow {
+  from {
+    opacity: 0;
+    transform: scale(0.06);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes globe-intro-vortex {
+  0% { transform: scale(1) rotate(0deg); }
+  18% { transform: scale(1.14) rotate(540deg); }
+  45% { transform: scale(1.06) rotate(1260deg); }
+  72% { transform: scale(1.12) rotate(1980deg); }
+  100% { transform: scale(1) rotate(2520deg); }
 }
 
 @keyframes globe-zoom {
@@ -591,5 +657,20 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .line, .sub, .visual, .finale { transition-duration: 0.01ms !important; }
   .col__track, .globe__track, .globe, .globe__ticker-track, .pin, .pin::after { animation: none !important; }
+  .globe-stack.is-intro-wait .globe,
+  .globe-stack.is-intro-grow .globe,
+  .globe-stack.is-intro-spin .globe {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+  .globe-stack.is-intro-wait .globe__ticker,
+  .globe-stack.is-intro-grow .globe__ticker,
+  .globe-stack.is-intro-spin .globe__ticker,
+  .globe-stack.is-intro-grow .globe__pins,
+  .globe-stack.is-intro-spin .globe__pins {
+    opacity: 1;
+    visibility: visible;
+  }
   .visual--photos { overflow-y: auto; mask-image: none; -webkit-mask-image: none; }
 }

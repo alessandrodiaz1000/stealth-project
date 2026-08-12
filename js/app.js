@@ -40,7 +40,8 @@
     {
       t: 'Stavolta però ho deciso di andare un po\' più lontano.',
       visual: 'dest',
-      slot: 'top'
+      slot: 'top',
+      destIntro: true
     },
     {
       t: 'Queste sono solo alcune idee a cui avevo pensato.',
@@ -61,6 +62,7 @@
   var finale = document.getElementById('finale');
   var wallEl = document.getElementById('wall');
   var destStage = document.getElementById('destStage');
+  var globeStack = document.getElementById('globeStack');
   var stepLabel = document.getElementById('step');
   var totalLabel = document.getElementById('total');
 
@@ -200,13 +202,52 @@
   buildGlobe();
   buildTicker();
 
-  function destPlay() {
+  var destIntroTimers = [];
+
+  function clearDestIntro() {
+    destIntroTimers.forEach(clearTimeout);
+    destIntroTimers = [];
+    if (globeStack) {
+      globeStack.classList.remove('is-intro-wait', 'is-intro-grow', 'is-intro-spin');
+    }
+  }
+
+  function queueDestIntro(fn, ms) {
+    destIntroTimers.push(setTimeout(fn, ms));
+  }
+
+  function startDestIntro() {
+    if (!globeStack || reduce) return;
+
+    clearDestIntro();
+    globeStack.classList.add('is-intro-wait');
+
+    queueDestIntro(function () {
+      globeStack.classList.remove('is-intro-wait');
+      globeStack.classList.add('is-intro-grow');
+    }, 700);
+
+    queueDestIntro(function () {
+      globeStack.classList.remove('is-intro-grow');
+      globeStack.classList.add('is-intro-spin');
+    }, 1650);
+
+    queueDestIntro(function () {
+      globeStack.classList.remove('is-intro-spin');
+    }, 4300);
+  }
+
+  function destPlay(intro) {
     destStage.hidden = false;
     destStage.classList.add('is-on');
     destStage.classList.remove('is-paused');
+
+    if (intro) startDestIntro();
+    else clearDestIntro();
   }
 
   function destStop() {
+    clearDestIntro();
     destStage.classList.remove('is-on');
     destStage.classList.add('is-paused');
     destStage.hidden = true;
@@ -233,6 +274,7 @@
     var step = STEPS[at];
     if (!step || step.final) return;
     var ms = step.hideText ? 4500 : readMs(step.t, step.long);
+    if (step.destIntro && !reduce) ms += 4200;
     autoTimer = setTimeout(function () { go(1); }, ms);
   }
 
@@ -240,7 +282,7 @@
     var photos = step.visual === 'photos';
     var dest = step.visual === 'dest';
     if (photos) wallPlay(); else wallStop();
-    if (dest) destPlay(); else destStop();
+    if (dest) destPlay(!!step.destIntro); else destStop();
   }
 
   function setLayout(step) {
