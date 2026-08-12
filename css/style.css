@@ -370,15 +370,12 @@ body {
   visibility: hidden;
 }
 
-.globe-stack.is-intro-grow .globe,
-.globe-stack.is-intro-spin .globe {
+.globe-stack.is-intro-grow .globe {
   visibility: visible;
 }
 
 .globe-stack.is-intro-grow .globe__ticker,
-.globe-stack.is-intro-spin .globe__ticker,
-.globe-stack.is-intro-grow .globe__pins,
-.globe-stack.is-intro-spin .globe__pins {
+.globe-stack.is-intro-grow .globe__pins {
   opacity: 0;
   visibility: hidden;
 }
@@ -391,17 +388,7 @@ body {
   animation: none;
 }
 
-.globe-stack.is-intro-spin .globe {
-  animation: none;
-  opacity: 1;
-  transform: scale(1);
-}
-
-.globe-stack.is-intro-spin .globe__track {
-  animation: globe-roll-fast 0.45s linear infinite;
-}
-
-.globe-stack:not(.is-intro-wait):not(.is-intro-grow):not(.is-intro-spin) .globe__ticker {
+.globe-stack:not(.is-intro-wait):not(.is-intro-grow) .globe__ticker {
   opacity: 1;
   visibility: visible;
 }
@@ -527,11 +514,6 @@ body {
   to { transform: translate3d(-50%, 0, 0); }
 }
 
-@keyframes globe-roll-fast {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
-}
-
 @keyframes globe-intro-grow {
   from {
     opacity: 0;
@@ -652,17 +634,14 @@ body {
   .line, .sub, .visual, .finale { transition-duration: 0.01ms !important; }
   .col__track, .globe__track, .globe, .globe__ticker-track, .pin, .pin::after { animation: none !important; }
   .globe-stack.is-intro-wait .globe,
-  .globe-stack.is-intro-grow .globe,
-  .globe-stack.is-intro-spin .globe {
+  .globe-stack.is-intro-grow .globe {
     opacity: 1;
     visibility: visible;
     transform: none;
   }
   .globe-stack.is-intro-wait .globe__ticker,
   .globe-stack.is-intro-grow .globe__ticker,
-  .globe-stack.is-intro-spin .globe__ticker,
-  .globe-stack.is-intro-grow .globe__pins,
-  .globe-stack.is-intro-spin .globe__pins {
+  .globe-stack.is-intro-grow .globe__pins {
     opacity: 1;
     visibility: visible;
   }

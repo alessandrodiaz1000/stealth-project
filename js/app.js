@@ -203,17 +203,88 @@
   buildTicker();
 
   var destIntroTimers = [];
+  var introRoll = null;
+
+  function stopIntroRoll(keepAnimation) {
+    if (introRoll && introRoll.raf) cancelAnimationFrame(introRoll.raf);
+    var track = document.getElementById('globeTrack');
+    if (track && !keepAnimation) {
+      track.style.transform = '';
+      track.style.animation = '';
+      track.style.animationDelay = '';
+    }
+    introRoll = null;
+  }
 
   function clearDestIntro() {
     destIntroTimers.forEach(clearTimeout);
     destIntroTimers = [];
+    stopIntroRoll(false);
     if (globeStack) {
-      globeStack.classList.remove('is-intro-wait', 'is-intro-grow', 'is-intro-spin');
+      globeStack.classList.remove('is-intro-wait', 'is-intro-grow');
     }
   }
 
   function queueDestIntro(fn, ms) {
     destIntroTimers.push(setTimeout(fn, ms));
+  }
+
+  function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
+  function startIntroRoll(onComplete) {
+    var track = document.getElementById('globeTrack');
+    if (!track) return;
+
+    var FAST = 1 / 0.45;
+    var SLOW = 1 / 12;
+    var GROW_MS = 900;
+    var CRUISE_MS = 2600;
+    var DECEL_MS = 2200;
+    var t0 = performance.now();
+
+    stopIntroRoll(false);
+    introRoll = { pos: 0, last: 0, raf: null };
+
+    function finishHandoff() {
+      var pos = introRoll.pos % 1;
+      track.style.transform = '';
+      track.style.animation = 'globe-roll 12s linear infinite';
+      track.style.animationDelay = '-' + (pos * 12) + 's';
+      stopIntroRoll(true);
+      if (onComplete) onComplete();
+    }
+
+    function frame(now) {
+      var elapsed = now - t0;
+      var speed;
+
+      if (elapsed < GROW_MS) {
+        speed = FAST * easeOutCubic(elapsed / GROW_MS);
+      } else if (elapsed < GROW_MS + CRUISE_MS) {
+        speed = FAST;
+      } else if (elapsed < GROW_MS + CRUISE_MS + DECEL_MS) {
+        var p = easeInOutCubic((elapsed - GROW_MS - CRUISE_MS) / DECEL_MS);
+        speed = FAST + (SLOW - FAST) * p;
+      } else {
+        finishHandoff();
+        return;
+      }
+
+      if (introRoll.last) {
+        introRoll.pos += speed * ((now - introRoll.last) / 1000);
+      }
+      introRoll.last = now;
+      track.style.transform = 'translate3d(-' + ((introRoll.pos % 1) * 50) + '%, 0, 0)';
+      introRoll.raf = requestAnimationFrame(frame);
+    }
+
+    introRoll.raf = requestAnimationFrame(frame);
   }
 
   function startDestIntro() {
@@ -225,16 +296,10 @@
     queueDestIntro(function () {
       globeStack.classList.remove('is-intro-wait');
       globeStack.classList.add('is-intro-grow');
+      startIntroRoll(function () {
+        globeStack.classList.remove('is-intro-grow');
+      });
     }, 700);
-
-    queueDestIntro(function () {
-      globeStack.classList.remove('is-intro-grow');
-      globeStack.classList.add('is-intro-spin');
-    }, 1650);
-
-    queueDestIntro(function () {
-      globeStack.classList.remove('is-intro-spin');
-    }, 4800);
   }
 
   function destPlay(intro) {
@@ -274,7 +339,7 @@
     var step = STEPS[at];
     if (!step || step.final) return;
     var ms = step.hideText ? 4500 : readMs(step.t, step.long);
-    if (step.destIntro && !reduce) ms += 4800;
+    if (step.destIntro && !reduce) ms += 6400;
     autoTimer = setTimeout(function () { go(1); }, ms);
   }
 
