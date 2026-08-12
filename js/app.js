@@ -244,7 +244,7 @@
     var FAST = 1 / 0.45;
     var SLOW = 1 / 12;
     var GROW_MS = 900;
-    var CRUISE_MS = 2600;
+    var CRUISE_MS = 1400;
     var DECEL_MS = 2200;
     var t0 = performance.now();
 
@@ -339,7 +339,7 @@
     var step = STEPS[at];
     if (!step || step.final) return;
     var ms = step.hideText ? 4500 : readMs(step.t, step.long);
-    if (step.destIntro && !reduce) ms += 6400;
+    if (step.destIntro && !reduce) ms += 5200;
     autoTimer = setTimeout(function () { go(1); }, ms);
   }
 
