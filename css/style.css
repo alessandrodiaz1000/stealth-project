@@ -392,11 +392,13 @@ body {
 }
 
 .globe-stack.is-intro-spin .globe {
-  animation: globe-intro-vortex 2.55s cubic-bezier(0.45, 0.05, 0.2, 1) forwards;
+  animation: none;
+  opacity: 1;
+  transform: scale(1);
 }
 
 .globe-stack.is-intro-spin .globe__track {
-  animation: globe-roll-fast 0.28s linear infinite;
+  animation: globe-roll-fast 0.45s linear infinite;
 }
 
 .globe-stack:not(.is-intro-wait):not(.is-intro-grow):not(.is-intro-spin) .globe__ticker {
@@ -539,14 +541,6 @@ body {
     opacity: 1;
     transform: scale(1);
   }
-}
-
-@keyframes globe-intro-vortex {
-  0% { transform: scale(1) rotate(0deg); }
-  18% { transform: scale(1.14) rotate(540deg); }
-  45% { transform: scale(1.06) rotate(1260deg); }
-  72% { transform: scale(1.12) rotate(1980deg); }
-  100% { transform: scale(1) rotate(2520deg); }
 }
 
 @keyframes globe-zoom {

@@ -234,7 +234,7 @@
 
     queueDestIntro(function () {
       globeStack.classList.remove('is-intro-spin');
-    }, 4300);
+    }, 4800);
   }
 
   function destPlay(intro) {
@@ -274,7 +274,7 @@
     var step = STEPS[at];
     if (!step || step.final) return;
     var ms = step.hideText ? 4500 : readMs(step.t, step.long);
-    if (step.destIntro && !reduce) ms += 4200;
+    if (step.destIntro && !reduce) ms += 4800;
     autoTimer = setTimeout(function () { go(1); }, ms);
   }
 
