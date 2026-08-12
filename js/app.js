@@ -204,6 +204,14 @@
 
   var destIntroTimers = [];
   var introRoll = null;
+  var INTRO_GROW_MS = 900;
+  var INTRO_CRUISE_MS = 1400;
+  var INTRO_DECEL_MS = 2200;
+  var INTRO_POST_MS = 2800;
+
+  function introRollMs() {
+    return INTRO_GROW_MS + INTRO_CRUISE_MS + INTRO_DECEL_MS;
+  }
 
   function stopIntroRoll(keepAnimation) {
     if (introRoll && introRoll.raf) cancelAnimationFrame(introRoll.raf);
@@ -243,9 +251,9 @@
 
     var FAST = 1 / 0.45;
     var SLOW = 1 / 12;
-    var GROW_MS = 900;
-    var CRUISE_MS = 1400;
-    var DECEL_MS = 2200;
+    var GROW_MS = INTRO_GROW_MS;
+    var CRUISE_MS = INTRO_CRUISE_MS;
+    var DECEL_MS = INTRO_DECEL_MS;
     var t0 = performance.now();
 
     stopIntroRoll(false);
@@ -287,7 +295,7 @@
     introRoll.raf = requestAnimationFrame(frame);
   }
 
-  function startDestIntro() {
+  function startDestIntro(readDelay) {
     if (!globeStack || reduce) return;
 
     clearDestIntro();
@@ -299,15 +307,15 @@
       startIntroRoll(function () {
         globeStack.classList.remove('is-intro-grow');
       });
-    }, 700);
+    }, readDelay);
   }
 
-  function destPlay(intro) {
+  function destPlay(intro, readDelay) {
     destStage.hidden = false;
     destStage.classList.add('is-on');
     destStage.classList.remove('is-paused');
 
-    if (intro) startDestIntro();
+    if (intro) startDestIntro(readDelay || 0);
     else clearDestIntro();
   }
 
@@ -339,7 +347,9 @@
     var step = STEPS[at];
     if (!step || step.final) return;
     var ms = step.hideText ? 4500 : readMs(step.t, step.long);
-    if (step.destIntro && !reduce) ms += 5200;
+    if (step.destIntro && !reduce) {
+      ms = readMs(step.t, step.long) + introRollMs() + INTRO_POST_MS;
+    }
     autoTimer = setTimeout(function () { go(1); }, ms);
   }
 
@@ -347,7 +357,8 @@
     var photos = step.visual === 'photos';
     var dest = step.visual === 'dest';
     if (photos) wallPlay(); else wallStop();
-    if (dest) destPlay(!!step.destIntro); else destStop();
+    if (dest) destPlay(!!step.destIntro, step.destIntro ? readMs(step.t, step.long) : 0);
+    else destStop();
   }
 
   function setLayout(step) {
